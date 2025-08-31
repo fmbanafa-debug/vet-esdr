@@ -3,480 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eSDR Form Vet</title>
+    <title>eSDR Form Vet - Multi-Step</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a cleaner look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Custom styles to complement Tailwind */
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
         }
-        h2 {
-            color: #333;
-            border-bottom: 2px solid #007BFF;
-            padding-bottom: 5px;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="email"], input[type="tel"], select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input[type="radio"], input[type="checkbox"] {
-            margin-right: 10px;
-        }
-        .conditional {
+
+        /* Hide form steps by default */
+        .form-step {
             display: none;
-            margin-left: 20px;
+            transform-origin: top left;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        button {
-            background-color: #007BFF;
+
+        /* Display the active step */
+        .form-step.active {
+            display: block;
+        }
+        
+        /* Progress bar styling */
+        .progress-step {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .progress-step.active {
+            background-color: #3b82f6; /* bg-blue-500 */
             color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
         }
-        button:hover {
-            background-color: #0056b3;
+        
+        .progress-step.completed {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+        }
+
+        .progress-line {
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
     </style>
 </head>
-<body>
-    <h1>eSDR Form Vet</h1>
-    <form id="esdrForm">
-        <!-- Step 1: Application Type -->
-        <div class="section">
-            <h2>Step 1: Application Type</h2>
-            <label for="applicationType">Application Type:</label>
-            <select id="applicationType" name="applicationType" onchange="toggleOther()">
-                <option value="">Select</option>
-                <option value="Other">Other</option>
-            </select>
-            <div id="otherType" class="conditional">
-                <label for="specifyType">Please Specify:</label>
-                <input type="text" id="specifyType" name="specifyType">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="container mx-auto max-w-4xl">
+        <div class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 md:p-12 my-10">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Veterinary eSDR Application</h1>
+            <p class="text-center text-gray-500 mb-8">Please fill out the form carefully, one step at a time.</p>
+
+            <!-- Progress Bar -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between">
+                    <div class="w-full">
+                        <div class="relative h-2 bg-gray-200 rounded-full">
+                            <div id="progress-line" class="absolute top-0 left-0 h-full bg-blue-500 rounded-full progress-line" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-4">
+                    <div class="text-center">
+                        <div id="step-1-indicator" class="progress-step w-10 h-10 mx-auto rounded-full text-lg text-white flex items-center justify-center bg-gray-300">1</div>
+                        <p class="text-xs text-gray-600 mt-2">Application</p>
+                    </div>
+                    <div class="text-center">
+                        <div id="step-2-indicator" class="progress-step w-10 h-10 mx-auto rounded-full text-lg text-white flex items-center justify-center bg-gray-300">2</div>
+                        <p class="text-xs text-gray-600 mt-2">Product Details</p>
+                    </div>
+                    <div class="text-center">
+                        <div id="step-3-indicator" class="progress-step w-10 h-10 mx-auto rounded-full text-lg text-white flex items-center justify-center bg-gray-300">3</div>
+                        <p class="text-xs text-gray-600 mt-2">Manufacturing</p>
+                    </div>
+                </div>
             </div>
 
-            <label>Is Saudi Arabia Country of Origin?</label>
-            <input type="radio" id="saOriginYes" name="saOrigin" value="Yes" onchange="toggleGeneralProduct()"> Yes
-            <input type="radio" id="saOriginNo" name="saOrigin" value="No" onchange="toggleGeneralProduct()"> No
+            <form id="esdrForm">
+                <!-- Step 1: Application Type -->
+                <div id="step-1" class="form-step active">
+                    <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-blue-500 pb-2 mb-6">Step 1: Application Type</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div>
+                            <label for="applicationType" class="block text-sm font-medium text-gray-700">Application Type:</label>
+                            <select id="applicationType" name="applicationType" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select an option</option>
+                                <option value="New">New Application</option>
+                                <option value="Renewal">Renewal</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div id="otherType" class="hidden">
+                            <label for="specifyType" class="block text-sm font-medium text-gray-700">Please Specify:</label>
+                            <input type="text" id="specifyType" name="specifyType" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                         <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Is Saudi Arabia Country of Origin?</label>
+                            <div class="mt-2 flex items-center space-x-6">
+                                <label class="flex items-center">
+                                    <input type="radio" id="saOriginYes" name="saOrigin" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Yes</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" id="saOriginNo" name="saOrigin" value="No" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 
-            <div id="generalProductInfo" class="conditional">
-                <h3>General Product Information</h3>
-                <label for="refTradeName">Reference Trade Name:</label>
-                <input type="text" id="refTradeName" name="refTradeName">
-                <label for="productStrength">Product Strength:</label>
-                <input type="text" id="productStrength" name="productStrength">
-                <label for="strengthUnit">Strength Unit:</label>
-                <select id="strengthUnit" name="strengthUnit">
-                    <option value="">Select</option>
-                    <option value="mg">mg</option>
-                    <option value="g">g</option>
-                    <option value="mL">mL</option>
-                </select>
-                <label for="dosageForm">Dosage Form:</label>
-                <select id="dosageForm" name="dosageForm">
-                    <option value="">Select</option>
-                    <option value="Tablet">Tablet</option>
-                    <option value="Capsule">Capsule</option>
-                    <option value="Injection">Injection</option>
-                </select>
+                    <div id="generalProductInfo" class="hidden mt-8 border-t pt-6">
+                        <h3 class="text-lg font-semibold text-gray-600 mb-4">General Product Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Fields will be dynamically shown here -->
+                            <div><label for="refTradeName" class="block text-sm font-medium text-gray-700">Reference Trade Name:</label><input type="text" id="refTradeName" name="refTradeName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                            <div><label for="productStrength" class="block text-sm font-medium text-gray-700">Product Strength:</label><input type="text" id="productStrength" name="productStrength" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                            <div><label for="strengthUnit" class="block text-sm font-medium text-gray-700">Strength Unit:</label><select id="strengthUnit" name="strengthUnit" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"><option value="">Select</option><option value="mg">mg</option><option value="g">g</option><option value="mL">mL</option></select></div>
+                            <div><label for="dosageForm" class="block text-sm font-medium text-gray-700">Dosage Form:</label><select id="dosageForm" name="dosageForm" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"><option value="">Select</option><option value="Tablet">Tablet</option><option value="Capsule">Capsule</option><option value="Injection">Injection</option></select></div>
+                        </div>
 
-                <h3>Authority</h3>
-                <label for="certifyingAuthority">Certifying Authority:</label>
-                <input type="text" id="certifyingAuthority" name="certifyingAuthority">
-                <label for="certifyingCountry">Certifying Country:</label>
-                <select id="certifyingCountry" name="certifyingCountry">
-                    <option value="">Select</option>
-                    <option value="USA">USA</option>
-                    <option value="EU">EU</option>
-                    <option value="Other">Other</option>
-                </select>
-                <label for="authDate">Date of Authorization:</label>
-                <input type="date" id="authDate" name="authDate">
+                        <h3 class="text-lg font-semibold text-gray-600 mt-8 mb-4">Authority</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div><label for="certifyingAuthority" class="block text-sm font-medium text-gray-700">Certifying Authority:</label><input type="text" id="certifyingAuthority" name="certifyingAuthority" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                            <div><label for="certifyingCountry" class="block text-sm font-medium text-gray-700">Certifying Country:</label><select id="certifyingCountry" name="certifyingCountry" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"><option value="">Select</option><option value="USA">USA</option><option value="EU">EU</option><option value="Other">Other</option></select></div>
+                            <div><label for="authDate" class="block text-sm font-medium text-gray-700">Date of Authorization:</label><input type="date" id="authDate" name="authDate" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                        </div>
 
-                <h3>Reference Product Information</h3>
-                <label for="refProductTradeName">Reference Product Trade Name:</label>
-                <input type="text" id="refProductTradeName" name="refProductTradeName">
-                <label for="refProductStrength">Reference Product Strength:</label>
-                <input type="text" id="refProductStrength" name="refProductStrength">
-                <label for="refProductStrengthUnit">Reference Product Strength Unit:</label>
-                <select id="refProductStrengthUnit" name="refProductStrengthUnit">
-                    <option value="">Select</option>
-                    <option value="mg">mg</option>
-                    <option value="g">g</option>
-                    <option value="mL">mL</option>
-                </select>
-                <label for="refProductDosage">Reference Product Dosage:</label>
-                <select id="refProductDosage" name="refProductDosage">
-                    <option value="">Select</option>
-                    <option value="Tablet">Tablet</option>
-                    <option value="Capsule">Capsule</option>
-                    <option value="Injection">Injection</option>
-                </select>
-            </div>
+                         <h3 class="text-lg font-semibold text-gray-600 mt-8 mb-4">Reference Product Information</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="refProductTradeName" class="block text-sm font-medium text-gray-700">Reference Product Trade Name:</label><input type="text" id="refProductTradeName" name="refProductTradeName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                            <div><label for="refProductStrength" class="block text-sm font-medium text-gray-700">Reference Product Strength:</label><input type="text" id="refProductStrength" name="refProductStrength" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></div>
+                            <div><label for="refProductStrengthUnit" class="block text-sm font-medium text-gray-700">Reference Product Strength Unit:</label><select id="refProductStrengthUnit" name="refProductStrengthUnit" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"><option value="">Select</option><option value="mg">mg</option><option value="g">g</option><option value="mL">mL</option></select></div>
+                            <div><label for="refProductDosage" class="block text-sm font-medium text-gray-700">Reference Product Dosage:</label><select id="refProductDosage" name="refProductDosage" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"><option value="">Select</option><option value="Tablet">Tablet</option><option value="Capsule">Capsule</option><option value="Injection">Injection</option></select></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Product Tradename and Details -->
+                <div id="step-2" class="form-step">
+                    <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-blue-500 pb-2 mb-6">Step 2: Product & Contact Details</h2>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div>
+                           <label for="mainTradeName" class="block text-sm font-medium text-gray-700">Main Product Trade Name:</label>
+                           <input type="text" id="mainTradeName" name="mainTradeName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                        </div>
+                        <div class="space-y-4">
+                           <!-- Yes/No Radio Groups -->
+                           <div class="flex justify-between items-center">
+                               <span class="text-sm font-medium text-gray-700">Is this product under license?</span>
+                               <div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="underLicense" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="underLicense" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div>
+                           </div>
+                           <div class="flex justify-between items-center">
+                               <span class="text-sm font-medium text-gray-700">Was there any scientific advice given by the SFDA?</span>
+                               <div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="sfdaAdvice" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="sfdaAdvice" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div>
+                           </div>
+                           <div class="flex justify-between items-center">
+                               <span class="text-sm font-medium text-gray-700">Is there a pediatric development program?</span>
+                               <div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="pediatricProgram" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="pediatricProgram" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div>
+                           </div>
+                           <!-- More Yes/No questions... -->
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product registered in GCC?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="gccRegistered" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="gccRegistered" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product registered in SRA?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="sraRegistered" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="sraRegistered" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product from the SFDA exemption list?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="sfdaExemption" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="sfdaExemption" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product a 1st or 2nd generic?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="genericStatus" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="genericStatus" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product a 2nd Brand?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="secondBrand" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="secondBrand" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                           <div class="flex justify-between items-center"><span class="text-sm font-medium text-gray-700">Is this product candidate for Priority Review?</span><div class="flex items-center space-x-4"><label class="flex items-center"><input type="radio" name="priorityReview" value="Yes" class="h-4 w-4 text-blue-600"> <span class="ml-2">Yes</span></label><label class="flex items-center"><input type="radio" name="priorityReview" value="No" class="h-4 w-4 text-blue-600"> <span class="ml-2">No</span></label></div></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t pt-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-4">Pharmacovigilance in KSA</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="text" name="pharmaFirstName" placeholder="First Name" class="p-2 border rounded-md">
+                                <input type="text" name="pharmaLastName" placeholder="Last Name" class="p-2 border rounded-md">
+                                <input type="text" name="pharmaMiddleName" placeholder="Middle Name" class="sm:col-span-2 p-2 border rounded-md">
+                                <input type="text" name="pharmaAddress1" placeholder="Address Line 1" class="sm:col-span-2 p-2 border rounded-md">
+                                <input type="text" name="pharmaCity" placeholder="City" class="p-2 border rounded-md">
+                                <input type="text" name="pharmaPostalCode" placeholder="Postal Code" class="p-2 border rounded-md">
+                                <input type="tel" name="pharmaPhone" placeholder="Phone" class="p-2 border rounded-md">
+                                <input type="email" name="pharmaEmail" placeholder="Email" class="p-2 border rounded-md">
+                            </div>
+                        </div>
+                         <div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-4">Marketing Authorization Holder (MAH)</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                               <input type="text" name="mahName" placeholder="MAH Name" class="sm:col-span-2 p-2 border rounded-md">
+                               <input type="text" name="mahAddress1" placeholder="Address Line 1" class="sm:col-span-2 p-2 border rounded-md">
+                               <input type="text" name="mahCity" placeholder="City" class="p-2 border rounded-md">
+                               <input type="text" name="mahPostalCode" placeholder="Postal Code" class="p-2 border rounded-md">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Manufacturers -->
+                <div id="step-3" class="form-step">
+                    <h2 class="text-2xl font-semibold text-gray-700 border-b-2 border-blue-500 pb-2 mb-6">Step 3: Manufacturing & Packaging</h2>
+                    <div class="space-y-8">
+                        <div>
+                           <h3 class="text-lg font-semibold text-gray-600 mb-4">Finished Product Manufacturers</h3>
+                           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <select name="finishedProduct" class="p-2 border rounded-md"><option>Select Product</option><option>Product A</option></select>
+                              <input type="text" name="finishedManufacturer" placeholder="Manufacturer" class="p-2 border rounded-md">
+                              <input type="text" name="finishedActivity" placeholder="Activity" class="p-2 border rounded-md">
+                           </div>
+                        </div>
+                         <div>
+                           <h3 class="text-lg font-semibold text-gray-600 mb-4">Shelf Life</h3>
+                           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <input type="text" name="shelfLife" placeholder="Proposed Shelf Life" class="p-2 border rounded-md">
+                              <select name="shelfLifeUnit" class="p-2 border rounded-md"><option>Months</option><option>Years</option></select>
+                              <select name="storageCondition" class="p-2 border rounded-md"><option>Storage Condition</option><option>Room Temperature</option><option>Refrigerated</option></select>
+                           </div>
+                        </div>
+                        <div>
+                           <h3 class="text-lg font-semibold text-gray-600 mb-4">Ingredients</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                                <input type="text" id="excipientName" name="excipientName" placeholder="Excipient Name" class="p-2 border rounded-md">
+                                <input type="text" placeholder="Quantity" class="p-2 border rounded-md">
+                                <select id="ingredientUnit" name="ingredientUnit" class="p-2 border rounded-md"><option>Unit</option><option>mg</option><option>g</option></select>
+                                <label class="flex items-center space-x-2 text-sm"><input type="checkbox" name="quantityQs" class="h-4 w-4 text-blue-600 rounded"><span>Quantity is QS?</span></label>
+                           </div>
+                        </div>
+                        <div>
+                           <h3 class="text-lg font-semibold text-gray-600 mb-4">Packaging</h3>
+                           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              <input type="text" id="packagingSize" name="packagingSize" placeholder="Packaging Size" class="p-2 border rounded-md">
+                              <input type="text" id="packagingVolume" name="packagingVolume" placeholder="Volume" class="p-2 border rounded-md">
+                              <select id="packagingUnit" name="packagingUnit" class="p-2 border rounded-md"><option>Unit</option><option>Tablets</option><option>mL</option></select>
+                              <select id="administrationRoute" name="administrationRoute" class="p-2 border rounded-md"><option>Administration Route</option><option>Oral</option><option>Injection</option></select>
+                              <select id="primaryPackaging" name="primaryPackaging" class="p-2 border rounded-md"><option>Primary Packaging</option><option>Blister</option><option>Vial</option></select>
+                              <select id="secondaryPackaging" name="secondaryPackaging" class="p-2 border rounded-md"><option>Secondary Packaging</option><option>Box</option><option>Carton</option></select>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-12 pt-6 border-t flex justify-between items-center">
+                    <button type="button" id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-lg transition-colors">Previous</button>
+                    <button type="button" id="nextBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Next</button>
+                    <button type="submit" id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg hidden transition-colors">Submit Form</button>
+                </div>
+            </form>
         </div>
-
-        <!-- Step 2: Product Tradename and Details -->
-        <div class="section">
-            <h2>Step 2: Product Tradename</h2>
-            <label for="mainTradeName">Main Product Trade Name:</label>
-            <input type="text" id="mainTradeName" name="mainTradeName">
-
-            <label>Is this product under license?</label>
-            <input type="radio" name="underLicense" value="Yes"> Yes
-            <input type="radio" name="underLicense" value="No"> No
-
-            <label>Was there any scientific advice given by the SFDA?</label>
-            <input type="radio" name="sfdaAdvice" value="Yes"> Yes
-            <input type="radio" name="sfdaAdvice" value="No"> No
-
-            <label>Is there a pediatric development program?</label>
-            <input type="radio" name="pediatricProgram" value="Yes"> Yes
-            <input type="radio" name="pediatricProgram" value="No"> No
-
-            <label>Is this product registered in GCC?</label>
-            <input type="radio" name="gccRegistered" value="Yes"> Yes
-            <input type="radio" name="gccRegistered" value="No"> No
-
-            <label>Is this product registered in SRA?</label>
-            <input type="radio" name="sraRegistered" value="Yes"> Yes
-            <input type="radio" name="sraRegistered" value="No"> No
-
-            <label>Is this product from the SFDA exemption list?</label>
-            <input type="radio" name="sfdaExemption" value="Yes"> Yes
-            <input type="radio" name="sfdaExemption" value="No"> No
-
-            <label>Is this product a 1st or 2nd generic?</label>
-            <input type="radio" name="genericStatus" value="Yes"> Yes
-            <input type="radio" name="genericStatus" value="No"> No
-
-            <label>Is this product a 2nd Brand?</label>
-            <input type="radio" name="secondBrand" value="Yes"> Yes
-            <input type="radio" name="secondBrand" value="No"> No
-
-            <label>Is this product candidate for Priority Review process?</label>
-            <input type="radio" name="priorityReview" value="Yes"> Yes
-            <input type="radio" name="priorityReview" value="No"> No
-
-            <h3>Pharmacovigilance in KSA</h3>
-            <label for="pharmaFirstName">First Name:</label>
-            <input type="text" id="pharmaFirstName" name="pharmaFirstName">
-            <label for="pharmaLastName">Last Name:</label>
-            <input type="text" id="pharmaLastName" name="pharmaLastName">
-            <label for="pharmaMiddleName">Middle Name:</label>
-            <input type="text" id="pharmaMiddleName" name="pharmaMiddleName">
-            <label for="pharmaCountry">Country:</label>
-            <select id="pharmaCountry" name="pharmaCountry">
-                <option value="">Select</option>
-                <option value="Saudi Arabia">Saudi Arabia</option>
-                <option value="Other">Other</option>
-            </select>
-            <label for="pharmaCity">City:</label>
-            <input type="text" id="pharmaCity" name="pharmaCity">
-            <label for="pharmaPostalCode">Postal Code:</label>
-            <input type="text" id="pharmaPostalCode" name="pharmaPostalCode">
-            <label for="pharmaAddress1">Address Line 1:</label>
-            <input type="text" id="pharmaAddress1" name="pharmaAddress1">
-            <label for="pharmaAddress2">Address Line 2:</label>
-            <input type="text" id="pharmaAddress2" name="pharmaAddress2">
-            <label for="pharmaAddress3">Address Line 3:</label>
-            <input type="text" id="pharmaAddress3" name="pharmaAddress3">
-            <label for="pharmaPhone">Phone:</label>
-            <input type="tel" id="pharmaPhone" name="pharmaPhone">
-            <label for="pharmaEmail">Email:</label>
-            <input type="email" id="pharmaEmail" name="pharmaEmail">
-            <label for="pharmaFax">Fax:</label>
-            <input type="text" id="pharmaFax" name="pharmaFax">
-
-            <h3>Marketing Authorization</h3>
-            <label for="mahName">Name of Marketing Authorization Holder (MAH):</label>
-            <input type="text" id="mahName" name="mahName">
-            <label for="mahCountry">Country of MAH:</label>
-            <select id="mahCountry" name="mahCountry">
-                <option value="">Select</option>
-                <option value="Saudi Arabia">Saudi Arabia</option>
-                <option value="Other">Other</option>
-            </select>
-            <label for="mahCity">City of MAH:</label>
-            <input type="text" id="mahCity" name="mahCity">
-            <label for="mahPostalCode">Postal Code of MAH:</label>
-            <input type="text" id="mahPostalCode" name="mahPostalCode">
-            <label for="mahAddress1">Address Line 1 of MAH:</label>
-            <input type="text" id="mahAddress1" name="mahAddress1">
-            <label for="mahAddress2">Address Line 2 of MAH:</label>
-            <input type="text" id="mahAddress2" name="mahAddress2">
-            <label for="mahAddress3">Address Line 3 of MAH:</label>
-            <input type="text" id="mahAddress3" name="mahAddress3">
-
-            <h3>Authorized Person for Communication in KSA</h3>
-            <label for="authPersonCompany">Company Name:</label>
-            <input type="text" id="authPersonCompany" name="authPersonCompany">
-            <label for="authPersonFirstName">First Name:</label>
-            <input type="text" id="authPersonFirstName" name="authPersonFirstName">
-            <label for="authPersonLastName">Last Name:</label>
-            <input type="text" id="authPersonLastName" name="authPersonLastName">
-            <label for="authPersonMiddleName">Middle Name:</label>
-            <input type="text" id="authPersonMiddleName" name="authPersonMiddleName">
-            <label for="authPersonAddress1">Address Line 1:</label>
-            <input type="text" id="authPersonAddress1" name="authPersonAddress1">
-            <label for="authPersonAddress2">Address Line 2:</label>
-            <input type="text" id="authPersonAddress2" name="authPersonAddress2">
-            <label for="authPersonAddress3">Address Line 3:</label>
-            <input type="text" id="authPersonAddress3" name="authPersonAddress3">
-            <label for="authPersonCountry">Country:</label>
-            <select id="authPersonCountry" name="authPersonCountry">
-                <option value="">Select</option>
-                <option value="Saudi Arabia">Saudi Arabia</option>
-                <option value="Other">Other</option>
-            </select>
-            <label for="authPersonCity">City:</label>
-            <input type="text" id="authPersonCity" name="authPersonCity">
-            <label for="authPersonPostalCode">Postal Code:</label>
-            <input type="text" id="authPersonPostalCode" name="authPersonPostalCode">
-            <label for="authPersonPhone">Phone:</label>
-            <input type="tel" id="authPersonPhone" name="authPersonPhone">
-            <label for="authPersonEmail">Email:</label>
-            <input type="email" id="authPersonEmail" name="authPersonEmail">
-            <label for="authPersonFax">Fax:</label>
-            <input type="text" id="authPersonFax" name="authPersonFax">
-            <label>Authorized for Communication:</label>
-            <input type="radio" name="authForComm" value="Yes"> Yes
-            <input type="radio" name="authForComm" value="No"> No
-        </div>
-
-        <!-- Step 3: Manufacturers -->
-        <div class="section">
-            <h2>Step 3: Manufacturers</h2>
-            <h3>Active Substance Pharmaceutical Ingredient (API) Manufacturers</h3>
-            <label for="apiSubstance">Active Substances:</label>
-            <select id="apiSubstance" name="apiSubstance">
-                <option value="">Select</option>
-                <option value="Substance1">Substance1</option>
-                <option value="Substance2">Substance2</option>
-            </select>
-            <label for="apiManufacturer">Manufacturer:</label>
-            <input type="text" id="apiManufacturer" name="apiManufacturer">
-            <label for="apiActivity">Activity:</label>
-            <input type="text" id="apiActivity" name="apiActivity">
-
-            <h3>Excipient Pharmaceutical Ingredient (EPI) Manufacturers</h3>
-            <label for="epiExcipient">Excipient:</label>
-            <select id="epiExcipient" name="epiExcipient">
-                <option value="">Select</option>
-                <option value="Excipient1">Excipient1</option>
-                <option value="Excipient2">Excipient2</option>
-            </select>
-            <label for="epiManufacturer">Manufacturer:</label>
-            <input type="text" id="epiManufacturer" name="epiManufacturer">
-            <label for="epiActivity">Activity:</label>
-            <input type="text" id="epiActivity" name="epiActivity">
-
-            <h3>Finished Product Manufacturers</h3>
-            <label for="finishedProduct">Product:</label>
-            <select id="finishedProduct" name="finishedProduct">
-                <option value="">Select</option>
-                <option value="Product1">Product1</option>
-                <option value="Product2">Product2</option>
-            </select>
-            <label for="finishedManufacturer">Manufacturer:</label>
-            <input type="text" id="finishedManufacturer" name="finishedManufacturer">
-            <label for="finishedActivity">Activity:</label>
-            <input type="text" id="finishedActivity" name="finishedActivity">
-
-            <h3>Shelf Life</h3>
-            <label for="shelfLife">Proposed Shelf Life:</label>
-            <input type="text" id="shelfLife" name="shelfLife">
-            <label for="shelfLifeUnit">Unit:</label>
-            <select id="shelfLifeUnit" name="shelfLifeUnit">
-                <option value="">Select</option>
-                <option value="Months">Months</option>
-                <option value="Years">Years</option>
-            </select>
-            <label for="afterOpening">After Opening Container:</label>
-            <input type="text" id="afterOpening" name="afterOpening">
-            <label for="afterOpeningUnit">Unit:</label>
-            <select id="afterOpeningUnit" name="afterOpeningUnit">
-                <option value="">Select</option>
-                <option value="Days">Days</option>
-                <option value="Weeks">Weeks</option>
-            </select>
-            <label for="afterReconstitution">After Reconstitution or Dilution:</label>
-            <input type="text" id="afterReconstitution" name="afterReconstitution">
-            <label for="afterReconstitutionUnit">Unit:</label>
-            <select id="afterReconstitutionUnit" name="afterReconstitutionUnit">
-                <option value="">Select</option>
-                <option value="Hours">Hours</option>
-                <option value="Days">Days</option>
-            </select>
-            <label for="storageCondition">Proposed Storage Condition:</label>
-            <select id="storageCondition" name="storageCondition">
-                <option value="">Select</option>
-                <option value="Room Temperature">Room Temperature</option>
-                <option value="Refrigerated">Refrigerated</option>
-            </select>
-
-            <h3>Animal Material</h3>
-            <label for="materialName">Material Name:</label>
-            <input Dissertation Proposal type="text" id="materialName" name="materialName">
-            <label for="animalName">Animal Name:</label>
-            <input type="text" id="animalName" name="animalName">
-            <label for="animalPart">Animal Part:</label>
-            <input type="text" id="animalPart" name="animalPart">
-            <label>Free from BSE/TSE:</label>
-            <input type="radio" name="bseTseFree" value="Yes"> Yes
-            <input type="radio" name="bseTseFree" value="No"> No
-
-            <h3>Maximum Residue Limit</h3>
-            <label for="mrlSubstance">Substance Name:</label>
-            <input type="text" id="mrlSubstance" name="mrlSubstance">
-            <label for="mrlSpecies">Species:</label>
-            <input type="text" id="mrlSpecies" name="mrlSpecies">
-            <label for="mrlTargetTissues">Target Tissues:</label>
-            <input type="text" id="mrlTargetTissues" name="mrlTargetTissues">
-            <label for="mrlValue">MRL:</label>
-            <input type="text" id="mrlValue" name="mrlValue">
-            <label for="mrlUnit">Unit:</label>
-            <select id="mrlUnit" name="mrlUnit">
-                <option value="">Select</option>
-                <option value="mg/kg">mg/kg</option>
-                <option value="µg/kg">µg/kg</option>
-            </select>
-            <label for="mrlRemarks">Remarks:</label>
-            <input type="text" id="mrlRemarks" name="mrlRemarks">
-
-            <h3>General</h3>
-            <label for="generalDosageForm">Dosage Form:</label>
-            <select id="generalDosageForm" name="generalDosageForm">
-                <option value="">Select</option>
-                <option value="Tablet">Tablet</option>
-                <option value="Capsule">Capsule</option>
-                <option value="Injection">Injection</option>
-            </select>
-            <label>Is this multiple strength per single package?</label>
-            <input type="radio" name="multipleStrength" value="Single"> Single
-            <input type="radio" name="multipleStrength" value="Multiple"> Multiple
-            <label for="generalStrength">Strength:</label>
-            <input type="text" id="generalStrength" name="generalStrength">
-            <label for="generalStrengthUnit">Unit:</label>
-            <select id="generalStrengthUnit" name="generalStrengthUnit">
-                <option value="">Select</option>
-                <option value="mg">mg</option>
-                <option value="g">g</option>
-                <option value="mL">mL</option>
-            </select>
-            <label for="referencePharmacopoeia">Reference Pharmacopoeia:</label>
-            <input type="text" id="referencePharmacopoeia" name="referencePharmacopoeia">
-            <label for="withdrawnPeriod">Withdrawn Period:</label>
-            <input type="text" id="withdrawnPeriod" name="withdrawnPeriod">
-
-            <h3>Add/Update Sub-product</h3>
-            <label for="subProductTradeName">Sub-Product Trade Name in Saudi Arabia:</label>
-            <input type="text" id="subProductTradeName" name="subProductTradeName">
-            <label for="subProductTradeNameEn">Sub-Product Trade Name in English:</label>
-            <input type="text" id="subProductTradeNameEn" name="subProductTradeNameEn">
-            <label for="subProductTradeNameAr">Sub-Product Trade Name in Arabic:</label>
-            <input type="text" id="subProductTradeNameAr" name="subProductTradeNameAr">
-
-            <h3>Ingredients</h3>
-            <label>Type of Active Substance:</label>
-            <input type="radio" name="activeSubstanceType" value="Single"> Single
-            <input type="radio" name="activeSubstanceType" value="Multiple"> Multiple
-            <label for="excipientName">Excipient Name:</label>
-            <input type="text" id="excipientName" name="excipientName">
-            <label for="operator">Operator:</label>
-            <select id="operator" name="operator">
-                <option value="">Select</option>
-                <option value="Equal">Equal</option>
-                <option value="Less Than">Less Than</option>
-                <option value="Greater Than">Greater Than</option>
-            </select>
-            <label for="ingredientUnit">Unit:</label>
-            <select id="ingredientUnit" name="ingredientUnit">
-                <option value="">Select</option>
-                <option value="mg">mg</option>
-                <option value="g">g</option>
-            </select>
-            <label>Quantity is QS?</label>
-            <input type="radio" name="quantityQs" value="Yes"> Yes
-            <input type="radio" name="quantityQs" value="No"> No
-
-            <h3>Certificate of Pharmaceutical Product (CPP)</h3>
-            <label>Do you have a CPP?</label>
-            <input type="radio" name="cppStatus" value="Yes"> Yes
-            <input type="radio" name="cppStatus" value="No"> No
-
-            <h3>Anatomical Therapeutic Chemical (ATC)</h3>
-            <label>ATC Code Assigned?</label>
-            <input type="radio" name="atcCode" value="Yes"> Yes
-            <input type="radio" name="atcCode" value="No"> No
-
-            <h3>Indication for Drugs</h3>
-            <label for="proposedIndications">Proposed Indications:</label>
-            <input type="text" id="proposedIndications" name="proposedIndications">
-
-            <h3>Packaging</h3>
-            <label for="packagingSize">Packaging Size:</label>
-            <input type="text" id="packagingSize" name="packagingSize">
-            <label for="packagingVolume">Volume:</label>
-            <input type="text" id="packagingVolume" name="packagingVolume">
-            <label for="packagingUnit">Unit:</label>
-            <select id="packagingUnit" name="packagingUnit">
-                <option value="">Select</option>
-                <option value="Tablets">Tablets</option>
-                <option value="mL">mL</option>
-            </select>
-            <label for="administrationRoute">Administration Route:</label>
-            <select id="administrationRoute" name="administrationRoute">
-                <option value="">Select</option>
-                <option value="Oral">Oral</option>
-                <option value="Injection">Injection</option>
-            </select>
-            <label for="primaryPackaging">Primary Packaging:</label>
-            <select id="primaryPackaging" name="primaryPackaging">
-                <option value="">Select</option>
-                <option value="Blister">Blister</option>
-                <option value="Vial">Vial</option>
-            </select>
-            <label for="secondaryPackaging">Secondary Packaging:</label>
-            <select id="secondaryPackaging" name="secondaryPackaging">
-                <option value="">Select</option>
-                <option value="Box">Box</option>
-                <option value="Carton">Carton</option>
-            </select>
-            <label>Is a barcode assigned for the package?</label>
-            <input type="radio" name="barcodeAssigned" value="Yes"> Yes
-            <input type="radio" name="barcodeAssigned" value="No"> No
-        </div>
-
-        <button type="submit">Submit Form</button>
-    </form>
+    </div>
 
     <script>
-        function toggleOther() {
-            const applicationType = document.getElementById('applicationType').value;
-            const otherType = document.getElementById('otherType');
-            otherType.style.display = applicationType === 'Other' ? 'block' : 'none';
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const formSteps = document.querySelectorAll('.form-step');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressLine = document.getElementById('progress-line');
+            const progressSteps = [
+                document.getElementById('step-1-indicator'),
+                document.getElementById('step-2-indicator'),
+                document.getElementById('step-3-indicator'),
+            ];
+            
+            let currentStep = 0;
 
-        function toggleGeneralProduct() {
-            const saOriginNo = document.getElementById('saOriginNo').checked;
-            const generalProductInfo = document.getElementById('generalProductInfo');
-            generalProductInfo.style.display = saOriginNo ? 'block' : 'none';
-        }
+            function updateFormSteps() {
+                formSteps.forEach((step, index) => {
+                    step.classList.toggle('active', index === currentStep);
+                });
+            }
+
+            function updateProgressBar() {
+                progressSteps.forEach((step, index) => {
+                    if (index < currentStep) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index === currentStep) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+                
+                const progressPercentage = (currentStep / (formSteps.length - 1)) * 100;
+                progressLine.style.width = `${progressPercentage}%`;
+            }
+
+            function updateButtons() {
+                prevBtn.style.display = currentStep === 0 ? 'none' : 'inline-block';
+                submitBtn.style.display = currentStep === formSteps.length - 1 ? 'inline-block' : 'none';
+                nextBtn.style.display = currentStep === formSteps.length - 1 ? 'none' : 'inline-block';
+            }
+            
+            function showStep(step) {
+                currentStep = step;
+                updateFormSteps();
+                updateProgressBar();
+                updateButtons();
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < formSteps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+            
+            document.getElementById('esdrForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Add your form submission logic here
+                alert('Form Submitted Successfully!');
+                // For demonstration, you might want to reset the form or redirect
+                showStep(0);
+                this.reset();
+            });
+
+            // --- Conditional Logic ---
+            document.getElementById('applicationType').addEventListener('change', function() {
+                const otherType = document.getElementById('otherType');
+                otherType.style.display = this.value === 'Other' ? 'block' : 'none';
+            });
+
+            document.querySelectorAll('input[name="saOrigin"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const generalProductInfo = document.getElementById('generalProductInfo');
+                    generalProductInfo.style.display = document.getElementById('saOriginNo').checked ? 'block' : 'none';
+                });
+            });
+
+            // Initialize the form state
+            showStep(0);
+        });
     </script>
 </body>
 </html>
