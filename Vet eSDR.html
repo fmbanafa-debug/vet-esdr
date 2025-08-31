@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSDR Form Vet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .conditional {
+            display: none;
+            margin-left: 20px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>eSDR Form Vet</h1>
+    <form id="esdrForm">
+        <!-- Step 1: Application Type -->
+        <div class="section">
+            <h2>Step 1: Application Type</h2>
+            <label for="applicationType">Application Type:</label>
+            <select id="applicationType" name="applicationType" onchange="toggleOther()">
+                <option value="">Select</option>
+                <option value="Other">Other</option>
+            </select>
+            <div id="otherType" class="conditional">
+                <label for="specifyType">Please Specify:</label>
+                <input type="text" id="specifyType" name="specifyType">
+            </div>
+
+            <label>Is Saudi Arabia Country of Origin?</label>
+            <input type="radio" id="saOriginYes" name="saOrigin" value="Yes" onchange="toggleGeneralProduct()"> Yes
+            <input type="radio" id="saOriginNo" name="saOrigin" value="No" onchange="toggleGeneralProduct()"> No
+
+            <div id="generalProductInfo" class="conditional">
+                <h3>General Product Information</h3>
+                <label for="refTradeName">Reference Trade Name:</label>
+                <input type="text" id="refTradeName" name="refTradeName">
+                <label for="productStrength">Product Strength:</label>
+                <input type="text" id="productStrength" name="productStrength">
+                <label for="strengthUnit">Strength Unit:</label>
+                <select id="strengthUnit" name="strengthUnit">
+                    <option value="">Select</option>
+                    <option value="mg">mg</option>
+                    <option value="g">g</option>
+                    <option value="mL">mL</option>
+                </select>
+                <label for="dosageForm">Dosage Form:</label>
+                <select id="dosageForm" name="dosageForm">
+                    <option value="">Select</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Injection">Injection</option>
+                </select>
+
+                <h3>Authority</h3>
+                <label for="certifyingAuthority">Certifying Authority:</label>
+                <input type="text" id="certifyingAuthority" name="certifyingAuthority">
+                <label for="certifyingCountry">Certifying Country:</label>
+                <select id="certifyingCountry" name="certifyingCountry">
+                    <option value="">Select</option>
+                    <option value="USA">USA</option>
+                    <option value="EU">EU</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label for="authDate">Date of Authorization:</label>
+                <input type="date" id="authDate" name="authDate">
+
+                <h3>Reference Product Information</h3>
+                <label for="refProductTradeName">Reference Product Trade Name:</label>
+                <input type="text" id="refProductTradeName" name="refProductTradeName">
+                <label for="refProductStrength">Reference Product Strength:</label>
+                <input type="text" id="refProductStrength" name="refProductStrength">
+                <label for="refProductStrengthUnit">Reference Product Strength Unit:</label>
+                <select id="refProductStrengthUnit" name="refProductStrengthUnit">
+                    <option value="">Select</option>
+                    <option value="mg">mg</option>
+                    <option value="g">g</option>
+                    <option value="mL">mL</option>
+                </select>
+                <label for="refProductDosage">Reference Product Dosage:</label>
+                <select id="refProductDosage" name="refProductDosage">
+                    <option value="">Select</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Injection">Injection</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Step 2: Product Tradename and Details -->
+        <div class="section">
+            <h2>Step 2: Product Tradename</h2>
+            <label for="mainTradeName">Main Product Trade Name:</label>
+            <input type="text" id="mainTradeName" name="mainTradeName">
+
+            <label>Is this product under license?</label>
+            <input type="radio" name="underLicense" value="Yes"> Yes
+            <input type="radio" name="underLicense" value="No"> No
+
+            <label>Was there any scientific advice given by the SFDA?</label>
+            <input type="radio" name="sfdaAdvice" value="Yes"> Yes
+            <input type="radio" name="sfdaAdvice" value="No"> No
+
+            <label>Is there a pediatric development program?</label>
+            <input type="radio" name="pediatricProgram" value="Yes"> Yes
+            <input type="radio" name="pediatricProgram" value="No"> No
+
+            <label>Is this product registered in GCC?</label>
+            <input type="radio" name="gccRegistered" value="Yes"> Yes
+            <input type="radio" name="gccRegistered" value="No"> No
+
+            <label>Is this product registered in SRA?</label>
+            <input type="radio" name="sraRegistered" value="Yes"> Yes
+            <input type="radio" name="sraRegistered" value="No"> No
+
+            <label>Is this product from the SFDA exemption list?</label>
+            <input type="radio" name="sfdaExemption" value="Yes"> Yes
+            <input type="radio" name="sfdaExemption" value="No"> No
+
+            <label>Is this product a 1st or 2nd generic?</label>
+            <input type="radio" name="genericStatus" value="Yes"> Yes
+            <input type="radio" name="genericStatus" value="No"> No
+
+            <label>Is this product a 2nd Brand?</label>
+            <input type="radio" name="secondBrand" value="Yes"> Yes
+            <input type="radio" name="secondBrand" value="No"> No
+
+            <label>Is this product candidate for Priority Review process?</label>
+            <input type="radio" name="priorityReview" value="Yes"> Yes
+            <input type="radio" name="priorityReview" value="No"> No
+
+            <h3>Pharmacovigilance in KSA</h3>
+            <label for="pharmaFirstName">First Name:</label>
+            <input type="text" id="pharmaFirstName" name="pharmaFirstName">
+            <label for="pharmaLastName">Last Name:</label>
+            <input type="text" id="pharmaLastName" name="pharmaLastName">
+            <label for="pharmaMiddleName">Middle Name:</label>
+            <input type="text" id="pharmaMiddleName" name="pharmaMiddleName">
+            <label for="pharmaCountry">Country:</label>
+            <select id="pharmaCountry" name="pharmaCountry">
+                <option value="">Select</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="pharmaCity">City:</label>
+            <input type="text" id="pharmaCity" name="pharmaCity">
+            <label for="pharmaPostalCode">Postal Code:</label>
+            <input type="text" id="pharmaPostalCode" name="pharmaPostalCode">
+            <label for="pharmaAddress1">Address Line 1:</label>
+            <input type="text" id="pharmaAddress1" name="pharmaAddress1">
+            <label for="pharmaAddress2">Address Line 2:</label>
+            <input type="text" id="pharmaAddress2" name="pharmaAddress2">
+            <label for="pharmaAddress3">Address Line 3:</label>
+            <input type="text" id="pharmaAddress3" name="pharmaAddress3">
+            <label for="pharmaPhone">Phone:</label>
+            <input type="tel" id="pharmaPhone" name="pharmaPhone">
+            <label for="pharmaEmail">Email:</label>
+            <input type="email" id="pharmaEmail" name="pharmaEmail">
+            <label for="pharmaFax">Fax:</label>
+            <input type="text" id="pharmaFax" name="pharmaFax">
+
+            <h3>Marketing Authorization</h3>
+            <label for="mahName">Name of Marketing Authorization Holder (MAH):</label>
+            <input type="text" id="mahName" name="mahName">
+            <label for="mahCountry">Country of MAH:</label>
+            <select id="mahCountry" name="mahCountry">
+                <option value="">Select</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="mahCity">City of MAH:</label>
+            <input type="text" id="mahCity" name="mahCity">
+            <label for="mahPostalCode">Postal Code of MAH:</label>
+            <input type="text" id="mahPostalCode" name="mahPostalCode">
+            <label for="mahAddress1">Address Line 1 of MAH:</label>
+            <input type="text" id="mahAddress1" name="mahAddress1">
+            <label for="mahAddress2">Address Line 2 of MAH:</label>
+            <input type="text" id="mahAddress2" name="mahAddress2">
+            <label for="mahAddress3">Address Line 3 of MAH:</label>
+            <input type="text" id="mahAddress3" name="mahAddress3">
+
+            <h3>Authorized Person for Communication in KSA</h3>
+            <label for="authPersonCompany">Company Name:</label>
+            <input type="text" id="authPersonCompany" name="authPersonCompany">
+            <label for="authPersonFirstName">First Name:</label>
+            <input type="text" id="authPersonFirstName" name="authPersonFirstName">
+            <label for="authPersonLastName">Last Name:</label>
+            <input type="text" id="authPersonLastName" name="authPersonLastName">
+            <label for="authPersonMiddleName">Middle Name:</label>
+            <input type="text" id="authPersonMiddleName" name="authPersonMiddleName">
+            <label for="authPersonAddress1">Address Line 1:</label>
+            <input type="text" id="authPersonAddress1" name="authPersonAddress1">
+            <label for="authPersonAddress2">Address Line 2:</label>
+            <input type="text" id="authPersonAddress2" name="authPersonAddress2">
+            <label for="authPersonAddress3">Address Line 3:</label>
+            <input type="text" id="authPersonAddress3" name="authPersonAddress3">
+            <label for="authPersonCountry">Country:</label>
+            <select id="authPersonCountry" name="authPersonCountry">
+                <option value="">Select</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="authPersonCity">City:</label>
+            <input type="text" id="authPersonCity" name="authPersonCity">
+            <label for="authPersonPostalCode">Postal Code:</label>
+            <input type="text" id="authPersonPostalCode" name="authPersonPostalCode">
+            <label for="authPersonPhone">Phone:</label>
+            <input type="tel" id="authPersonPhone" name="authPersonPhone">
+            <label for="authPersonEmail">Email:</label>
+            <input type="email" id="authPersonEmail" name="authPersonEmail">
+            <label for="authPersonFax">Fax:</label>
+            <input type="text" id="authPersonFax" name="authPersonFax">
+            <label>Authorized for Communication:</label>
+            <input type="radio" name="authForComm" value="Yes"> Yes
+            <input type="radio" name="authForComm" value="No"> No
+        </div>
+
+        <!-- Step 3: Manufacturers -->
+        <div class="section">
+            <h2>Step 3: Manufacturers</h2>
+            <h3>Active Substance Pharmaceutical Ingredient (API) Manufacturers</h3>
+            <label for="apiSubstance">Active Substances:</label>
+            <select id="apiSubstance" name="apiSubstance">
+                <option value="">Select</option>
+                <option value="Substance1">Substance1</option>
+                <option value="Substance2">Substance2</option>
+            </select>
+            <label for="apiManufacturer">Manufacturer:</label>
+            <input type="text" id="apiManufacturer" name="apiManufacturer">
+            <label for="apiActivity">Activity:</label>
+            <input type="text" id="apiActivity" name="apiActivity">
+
+            <h3>Excipient Pharmaceutical Ingredient (EPI) Manufacturers</h3>
+            <label for="epiExcipient">Excipient:</label>
+            <select id="epiExcipient" name="epiExcipient">
+                <option value="">Select</option>
+                <option value="Excipient1">Excipient1</option>
+                <option value="Excipient2">Excipient2</option>
+            </select>
+            <label for="epiManufacturer">Manufacturer:</label>
+            <input type="text" id="epiManufacturer" name="epiManufacturer">
+            <label for="epiActivity">Activity:</label>
+            <input type="text" id="epiActivity" name="epiActivity">
+
+            <h3>Finished Product Manufacturers</h3>
+            <label for="finishedProduct">Product:</label>
+            <select id="finishedProduct" name="finishedProduct">
+                <option value="">Select</option>
+                <option value="Product1">Product1</option>
+                <option value="Product2">Product2</option>
+            </select>
+            <label for="finishedManufacturer">Manufacturer:</label>
+            <input type="text" id="finishedManufacturer" name="finishedManufacturer">
+            <label for="finishedActivity">Activity:</label>
+            <input type="text" id="finishedActivity" name="finishedActivity">
+
+            <h3>Shelf Life</h3>
+            <label for="shelfLife">Proposed Shelf Life:</label>
+            <input type="text" id="shelfLife" name="shelfLife">
+            <label for="shelfLifeUnit">Unit:</label>
+            <select id="shelfLifeUnit" name="shelfLifeUnit">
+                <option value="">Select</option>
+                <option value="Months">Months</option>
+                <option value="Years">Years</option>
+            </select>
+            <label for="afterOpening">After Opening Container:</label>
+            <input type="text" id="afterOpening" name="afterOpening">
+            <label for="afterOpeningUnit">Unit:</label>
+            <select id="afterOpeningUnit" name="afterOpeningUnit">
+                <option value="">Select</option>
+                <option value="Days">Days</option>
+                <option value="Weeks">Weeks</option>
+            </select>
+            <label for="afterReconstitution">After Reconstitution or Dilution:</label>
+            <input type="text" id="afterReconstitution" name="afterReconstitution">
+            <label for="afterReconstitutionUnit">Unit:</label>
+            <select id="afterReconstitutionUnit" name="afterReconstitutionUnit">
+                <option value="">Select</option>
+                <option value="Hours">Hours</option>
+                <option value="Days">Days</option>
+            </select>
+            <label for="storageCondition">Proposed Storage Condition:</label>
+            <select id="storageCondition" name="storageCondition">
+                <option value="">Select</option>
+                <option value="Room Temperature">Room Temperature</option>
+                <option value="Refrigerated">Refrigerated</option>
+            </select>
+
+            <h3>Animal Material</h3>
+            <label for="materialName">Material Name:</label>
+            <input Dissertation Proposal type="text" id="materialName" name="materialName">
+            <label for="animalName">Animal Name:</label>
+            <input type="text" id="animalName" name="animalName">
+            <label for="animalPart">Animal Part:</label>
+            <input type="text" id="animalPart" name="animalPart">
+            <label>Free from BSE/TSE:</label>
+            <input type="radio" name="bseTseFree" value="Yes"> Yes
+            <input type="radio" name="bseTseFree" value="No"> No
+
+            <h3>Maximum Residue Limit</h3>
+            <label for="mrlSubstance">Substance Name:</label>
+            <input type="text" id="mrlSubstance" name="mrlSubstance">
+            <label for="mrlSpecies">Species:</label>
+            <input type="text" id="mrlSpecies" name="mrlSpecies">
+            <label for="mrlTargetTissues">Target Tissues:</label>
+            <input type="text" id="mrlTargetTissues" name="mrlTargetTissues">
+            <label for="mrlValue">MRL:</label>
+            <input type="text" id="mrlValue" name="mrlValue">
+            <label for="mrlUnit">Unit:</label>
+            <select id="mrlUnit" name="mrlUnit">
+                <option value="">Select</option>
+                <option value="mg/kg">mg/kg</option>
+                <option value="µg/kg">µg/kg</option>
+            </select>
+            <label for="mrlRemarks">Remarks:</label>
+            <input type="text" id="mrlRemarks" name="mrlRemarks">
+
+            <h3>General</h3>
+            <label for="generalDosageForm">Dosage Form:</label>
+            <select id="generalDosageForm" name="generalDosageForm">
+                <option value="">Select</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Capsule">Capsule</option>
+                <option value="Injection">Injection</option>
+            </select>
+            <label>Is this multiple strength per single package?</label>
+            <input type="radio" name="multipleStrength" value="Single"> Single
+            <input type="radio" name="multipleStrength" value="Multiple"> Multiple
+            <label for="generalStrength">Strength:</label>
+            <input type="text" id="generalStrength" name="generalStrength">
+            <label for="generalStrengthUnit">Unit:</label>
+            <select id="generalStrengthUnit" name="generalStrengthUnit">
+                <option value="">Select</option>
+                <option value="mg">mg</option>
+                <option value="g">g</option>
+                <option value="mL">mL</option>
+            </select>
+            <label for="referencePharmacopoeia">Reference Pharmacopoeia:</label>
+            <input type="text" id="referencePharmacopoeia" name="referencePharmacopoeia">
+            <label for="withdrawnPeriod">Withdrawn Period:</label>
+            <input type="text" id="withdrawnPeriod" name="withdrawnPeriod">
+
+            <h3>Add/Update Sub-product</h3>
+            <label for="subProductTradeName">Sub-Product Trade Name in Saudi Arabia:</label>
+            <input type="text" id="subProductTradeName" name="subProductTradeName">
+            <label for="subProductTradeNameEn">Sub-Product Trade Name in English:</label>
+            <input type="text" id="subProductTradeNameEn" name="subProductTradeNameEn">
+            <label for="subProductTradeNameAr">Sub-Product Trade Name in Arabic:</label>
+            <input type="text" id="subProductTradeNameAr" name="subProductTradeNameAr">
+
+            <h3>Ingredients</h3>
+            <label>Type of Active Substance:</label>
+            <input type="radio" name="activeSubstanceType" value="Single"> Single
+            <input type="radio" name="activeSubstanceType" value="Multiple"> Multiple
+            <label for="excipientName">Excipient Name:</label>
+            <input type="text" id="excipientName" name="excipientName">
+            <label for="operator">Operator:</label>
+            <select id="operator" name="operator">
+                <option value="">Select</option>
+                <option value="Equal">Equal</option>
+                <option value="Less Than">Less Than</option>
+                <option value="Greater Than">Greater Than</option>
+            </select>
+            <label for="ingredientUnit">Unit:</label>
+            <select id="ingredientUnit" name="ingredientUnit">
+                <option value="">Select</option>
+                <option value="mg">mg</option>
+                <option value="g">g</option>
+            </select>
+            <label>Quantity is QS?</label>
+            <input type="radio" name="quantityQs" value="Yes"> Yes
+            <input type="radio" name="quantityQs" value="No"> No
+
+            <h3>Certificate of Pharmaceutical Product (CPP)</h3>
+            <label>Do you have a CPP?</label>
+            <input type="radio" name="cppStatus" value="Yes"> Yes
+            <input type="radio" name="cppStatus" value="No"> No
+
+            <h3>Anatomical Therapeutic Chemical (ATC)</h3>
+            <label>ATC Code Assigned?</label>
+            <input type="radio" name="atcCode" value="Yes"> Yes
+            <input type="radio" name="atcCode" value="No"> No
+
+            <h3>Indication for Drugs</h3>
+            <label for="proposedIndications">Proposed Indications:</label>
+            <input type="text" id="proposedIndications" name="proposedIndications">
+
+            <h3>Packaging</h3>
+            <label for="packagingSize">Packaging Size:</label>
+            <input type="text" id="packagingSize" name="packagingSize">
+            <label for="packagingVolume">Volume:</label>
+            <input type="text" id="packagingVolume" name="packagingVolume">
+            <label for="packagingUnit">Unit:</label>
+            <select id="packagingUnit" name="packagingUnit">
+                <option value="">Select</option>
+                <option value="Tablets">Tablets</option>
+                <option value="mL">mL</option>
+            </select>
+            <label for="administrationRoute">Administration Route:</label>
+            <select id="administrationRoute" name="administrationRoute">
+                <option value="">Select</option>
+                <option value="Oral">Oral</option>
+                <option value="Injection">Injection</option>
+            </select>
+            <label for="primaryPackaging">Primary Packaging:</label>
+            <select id="primaryPackaging" name="primaryPackaging">
+                <option value="">Select</option>
+                <option value="Blister">Blister</option>
+                <option value="Vial">Vial</option>
+            </select>
+            <label for="secondaryPackaging">Secondary Packaging:</label>
+            <select id="secondaryPackaging" name="secondaryPackaging">
+                <option value="">Select</option>
+                <option value="Box">Box</option>
+                <option value="Carton">Carton</option>
+            </select>
+            <label>Is a barcode assigned for the package?</label>
+            <input type="radio" name="barcodeAssigned" value="Yes"> Yes
+            <input type="radio" name="barcodeAssigned" value="No"> No
+        </div>
+
+        <button type="submit">Submit Form</button>
+    </form>
+
+    <script>
+        function toggleOther() {
+            const applicationType = document.getElementById('applicationType').value;
+            const otherType = document.getElementById('otherType');
+            otherType.style.display = applicationType === 'Other' ? 'block' : 'none';
+        }
+
+        function toggleGeneralProduct() {
+            const saOriginNo = document.getElementById('saOriginNo').checked;
+            const generalProductInfo = document.getElementById('generalProductInfo');
+            generalProductInfo.style.display = saOriginNo ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
